@@ -1,0 +1,115 @@
+/* styles/SidebarNavigation.module.css */
+.nav {
+    transition: width 0.3s ease;
+    width: 350px;
+    min-height: 100vh;
+    background-color: #2B2B2B;
+    position: fixed;
+    left: 0;
+    top: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo_container {
+    /*padding: 0  45px 0 45px;*/
+    position: relative; /* Nécessaire pour le layout "fill" de Next Image */
+    width: 40%; /* Taille initiale du conteneur de logo */
+    height: 150px;
+    margin-top: 20px;/* Hauteur initiale */
+    transition: height 0.3s ease; /* Transition fluide pour la hauteur */
+}
+
+.collapsedLogo {
+    height: 120px;
+    margin-bottom: 20px;
+}
+
+.collapsed {
+    width: 100px;
+}
+
+.menuItems{
+    min-width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+}
+.menuItem {
+    /* Styles pour les éléments de menu */
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 75%;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: rgba(var(--callout-border-rgb), 1);;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    transition: all 0.3s ease;
+}
+.menuItem:hover {
+    background-color: #4d5052; /* Fond complet */
+    border: 1px solid white;
+    color: white;
+}
+.toggleIcon:hover{
+    background-color: #4d5052; /* Fond complet */
+    border: 1px solid white;
+    color: white;
+}
+
+
+
+.title {
+    margin-left: 10px;
+    opacity: 1;
+    font-weight: bold;
+    transform: translateX(0);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transition fluide pour le titre */
+}
+
+
+.nav.collapsed .title {
+    opacity: 0;
+    transform: translateX(-10px); /* Légèrement déplacer le titre pour l'effet de transition */
+    display: none; /* Cachez le titre lorsqu'il est complètement transparent */
+}
+.collapsed .menuItem .icon {
+    margin: auto;
+    width: 100%;
+
+}
+.ico{
+    color: inherit;
+}
+.hidden{
+    display: none;
+}
+
+.toggleIcon {
+    position: absolute;
+    top: 10px; /* Ajustez selon votre mise en page */
+    right: -15px; /* Positionnez à l'extérieur de la barre latérale */
+    font-size: 24px;
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    background: #2B2B2B;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.rotated {
+    transform: rotate(180deg); /* Tourne l'icône de 180 degrés */
+}
+.collapsed .menuItems {
+    margin: 0;
+}
+.collapsed .menuItem {
+    width: 50%;
+}
