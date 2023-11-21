@@ -1,19 +1,20 @@
 // pages/index.js
 import React, { useState} from 'react';
-// import styles from '../styles/Home.module.css';
+import styles from '../styles/Home.module.css';
 // import { useRouter } from 'next/router';
-// import SidebarNavigation from "@/components/SidebarNavigation";
-import withAuth from "../components/withAuth"
-import { signIn, signOut, useSession } from "next-auth/react";
-
+import SidebarNavigation from "@/components/SidebarNavigation";
+import withAuth from "../components/withAuth";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
     // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-    const currentUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     return (
         <>
-        <p>hello world</p>
+            <SidebarNavigation onToggle={() => setIsSidebarCollapsed(prev => !prev)} />
+            <main className={`${styles.mainContent} ${!isSidebarCollapsed ? styles.expandedMain : ''}`}>
+            </main>
         </>
     );
 }

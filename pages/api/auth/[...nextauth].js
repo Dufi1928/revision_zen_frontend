@@ -22,32 +22,33 @@ export default NextAuth({
                 const passkey = process.env.DJANGO_SECRET_KEY;
                 const response = await axios.post('https://revisionzen.com:8000/api/auth/checkIfUserExist', {
                     email: email || user.email,
+                    firstName: profile?.given_name || user?.name?.split(" ")[0], // Ajoute le prénom
+                    lastName: profile?.family_name || user?.name?.split(" ").slice(1).join(" "),
+                    smallSizeAvatar: profile?.image || user?.image,
                     passkey
                 });
-
                 if (response.status === 200 && response.data.jwt) {
-                    user.jwt = response.data.jwt; // Stocker le JWT dans l'objet user
-                    account.jwt = response.data.jwt; // Stocker le JWT dans l'objet account
+                    user.jwt = response.data.jwt; // Stocke le JWT dans l'objet utilisateur
                     return true;
                 } else {
                     return false;
                 }
             } catch (error) {
-                console.error("Erreur lors de la vérification de l'utilisateur : ", error);
+                console.error("Erreur lors de la connexion :", error);
                 return false;
             }
         },
-
-        async session({ session, token }) {
-            session.jwt = token.jwt; // Ajouter le JWT à la session
+        async session({ session, user, token }) {
+            if (token.jwt) {
+                session.user.jwt = token.jwt; // Ajoute le JWT à la session
+            }
             return session;
         },
-
         async jwt({ token, user, account }) {
-            if (account?.jwt) {
-                token.jwt = account.jwt; // Passer le JWT au token
+            if (user?.jwt) {
+                token.jwt = user.jwt;
             }
             return token;
-        },
+        }
     },
 });

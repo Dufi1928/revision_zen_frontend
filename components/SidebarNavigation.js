@@ -5,6 +5,7 @@ import styles from '../styles/SidebarNavigation.module.css';
 import { useAuth } from '../contexts/AuthProvider';
 
 const SidebarNavigation = ({ onToggle }) => {
+
     const { isLoggedIn, logIn, logOut } = useAuth();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [showTitles, setShowTitles] = useState(true);
@@ -95,7 +96,6 @@ const SidebarNavigation = ({ onToggle }) => {
             <span onClick={toggleCollapse} className={`${styles.toggleIcon} material-symbols-outlined ${isCollapsed ? styles.rotated : ''}`}>
                 keyboard_arrow_left
             </span>
-
         </div>
     );
 };

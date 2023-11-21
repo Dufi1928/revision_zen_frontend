@@ -5,6 +5,7 @@ import styles from '../../styles/Signup.module.css'
 import Image from "next/image";
 import {signIn, signOut, useSession} from "next-auth/react";
 
+
 function LogIn() {
     const { data, status } = useSession();
 

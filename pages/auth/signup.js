@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import styles from '../../styles/Signup.module.css'
 import { useRouter } from 'next/router';
 import Image from "next/image";
+import Navbar from "../../components/Navbar"
 
 function SugnUp() {
     const router = useRouter();
@@ -36,7 +37,6 @@ function SugnUp() {
     useEffect(() => {
         setPseudoError("")
     }, [pseudo ]);
-
 
     const validateEmail = (email) => {
         const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -89,22 +89,14 @@ function SugnUp() {
 
     return (
         <>
+
             <main className={styles.mainContent}>
                 <div className={styles.page_content}>
+                    <Navbar/>
                     <div className={styles.page_inner_container}>
                         <div className={styles.left_side}>
-                            <div className={styles.image_container}>
-                                <Image
-                                    src="/Auth/signUp.svg"
-                                    alt="Développeuse ajustant une interface de connexion sur un écran de smartphone géant avec des éléments de design flottants et une plante."
-                                    fill
-                                    style={{ objectFit: 'contain' }}
-                                />
-                            </div>
-                        </div>
-                        <div className={styles.right_side}>
                             <div className={styles.form_title}>
-                                <h1>Créez Votre Compte</h1>
+                                <h1>Créez Votre Compte 👋</h1>
                             </div>
                             <form className={styles.form}>
                                 <div className={styles.form_group}>
@@ -162,6 +154,17 @@ function SugnUp() {
                                 </div>
                             </form>
                         </div>
+                        <div className={styles.right_side}>
+                            <div className={styles.image_container}>
+                                <Image
+                                    src="/Auth/signUp.svg"
+                                    alt="Développeuse ajustant une interface de connexion sur un écran de smartphone géant avec des éléments de design flottants et une plante."
+                                    fill
+                                    style={{ objectFit: 'contain' }}
+                                />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </main>

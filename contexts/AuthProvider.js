@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import {signIn, signOut, useSession} from "next-auth/react";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -11,10 +12,20 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('jwt', jwtToken);
         setIsLoggedIn(true);
     };
-    const logOut = () => {
-        localStorage.removeItem('jwt');
-        setIsLoggedIn(false);
-        router.push('/auth/login');
+    const logOut = async () => {
+        try {
+            const result = await signOut({ redirect: false });
+            localStorage.removeItem('jwt');
+            setIsLoggedIn(false);
+            if (result?.url) {
+                router.push(result.url);
+            } else {
+                router.push('/auth/login');
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+
     };
 
     return (
