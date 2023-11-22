@@ -27,8 +27,11 @@ const withAuth = (WrappedComponent) => {
                     console.log(status);
                 }
             }else if(status !== 'loading' && status !== 'authenticated'){
-                console.log('status: '+status);
-                setRedirectToLogin(true);
+                if (localStorage.getItem('jwt')){
+                    setToken(localStorage.getItem('jwt'));
+                }else{
+                    setRedirectToLogin(true);
+                }
             }
             else{
                 setIsLoading(false);
@@ -44,9 +47,7 @@ const withAuth = (WrappedComponent) => {
 
         if (isLoading) return <Loading />;
         if (!isLoggedIn) {
-            if (localStorage.getItem('jwt')){
-                setToken(localStorage.getItem('jwt'));
-            }
+
             if (token !== "") {
                 let config = {
                     method: 'get',
@@ -72,7 +73,7 @@ const withAuth = (WrappedComponent) => {
             }
         }
         else{
-                return isLoggedIn ? <WrappedComponent {...props} /> : null;
+            return isLoggedIn ? <WrappedComponent {...props} /> : null;
         }
     }
 };

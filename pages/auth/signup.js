@@ -89,10 +89,9 @@ function SugnUp() {
 
     return (
         <>
-
             <main className={styles.mainContent}>
                 <div className={styles.page_content}>
-                    <Navbar/>
+                    {/*<Navbar/>*/}
                     <div className={styles.page_inner_container}>
                         <div className={styles.left_side}>
                             <div className={styles.form_title}>
