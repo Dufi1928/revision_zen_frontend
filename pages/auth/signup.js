@@ -3,7 +3,13 @@ import { useAuth } from '../../contexts/AuthProvider';
 import styles from '../../styles/Signup.module.css'
 import { useRouter } from 'next/router';
 import Image from "next/image";
-import Navbar from "../../components/Navbar"
+import {GoogleIcon,
+    FacebookIcon,
+    UserIcon,
+    EmailIcon,
+    VisiblePasswordIcon,
+    VisibleOffPasswordIcon } from "@/components/icons";
+import {signIn} from "next-auth/react";
 
 function SugnUp() {
     const router = useRouter();
@@ -14,12 +20,13 @@ function SugnUp() {
     const [email, setEmail] = useState("");
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
+    const [isVisiblePassword, setIsVisiblePassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [pseudoError, setPseudoError] = useState("");
     const { logIn } = useAuth();
-
+    const currentUrl = typeof window !== 'undefined' ? window.location.origin : '';
     useEffect(() => {
         setFirstNameError("")
     }, [firstName]);
@@ -27,16 +34,13 @@ function SugnUp() {
         setLastNameError("")
     }, [lastName]);
     useEffect(() => {
-        setFirstNameError("")
+        setPasswordError("")
     }, [password, confirmPassword]);
 
     useEffect(() => {
         setEmailError("")
     }, [email ]);
 
-    useEffect(() => {
-        setPseudoError("")
-    }, [pseudo ]);
 
     const validateEmail = (email) => {
         const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -55,6 +59,10 @@ function SugnUp() {
             setPasswordError("Les mots de passe ne correspondent pas.");
             return;
         }
+        if (password === '') {
+            setPasswordError("Les mots de passe dois pas étre vide.");
+            return;
+        }
         if (!validateEmail(email)) {
             setEmailError("L'Email n'est pas valide");
             return;
@@ -66,11 +74,10 @@ function SugnUp() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, pseudo, password, firstName, lastName })
+                body: JSON.stringify({ email, password, firstName, lastName })
             });
             const data = await response.json();
             if (!response.ok) {
-                // Utilisez les données déjà lues pour obtenir le message d'erreur
                 throw new Error(data.message || 'Erreur inconnue');
             }
             if (data.jwtToken) {
@@ -83,93 +90,95 @@ function SugnUp() {
             }else if (error.message === "User with this pseudo already exists"){
                 setPseudoError("User with this email already exists")
             }
-
+            else {
+                console.error(error);
+            }
         }
     };
+
+    function changeVisibility() {
+        setIsVisiblePassword(!isVisiblePassword)
+    }
 
     return (
         <>
             <main className={styles.mainContent}>
-                <div className={styles.page_content}>
-                    {/*<Navbar/>*/}
-                    <div className={styles.page_inner_container}>
-                        <div className={styles.left_side}>
-                            <div className={styles.form_title}>
-                                <h1>Créez Votre Compte 👋</h1>
+                <div className={styles.left_side}>
+                    <div className={styles.pc_container}>
+                        <div className={styles.pc_image_wrapper}>
+                            <Image
+                                src="/Auth/3dObject2.png"
+                                alt="pcImage"
+                                fill
+                                className={ styles.pc_image}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.form_wrapper}>
+                        <form className={styles.form}>
+                            <h2 className={styles.form_title}>Inscris-toi gratuitement 👋</h2>
+                            <div className={styles.socials_buttons}>
+                                <button className={styles.google_button} onClick={() => signIn('google', { callbackUrl: `${currentUrl}/` })}> <GoogleIcon/><span className={styles.inner_button}>Google</span></button>
+                                <button className={styles.facebook_button}><FacebookIcon/><span className={styles.inner_button}>Facebook</span></button>
                             </div>
-                            <form className={styles.form}>
-                                <div className={styles.form_group}>
-                                    <div className={styles.group_small}>
-                                        <input className={styles.input} type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required/>
-                                        <span className={styles.highlight}></span>
-                                        <span className={styles.bar}></span>
-                                        <label className={styles.input_label}>Nom</label>
-                                        {firstNameError && <span className={styles.input_label_error}>{firstNameError}</span>}
+                            <div className={styles.separate}>
+                                <div className={styles.separate_content_wrapper}>
+                                    <h2 >Or</h2>
+                                </div>
+                            </div>
+                            <div className={styles.form_content}>
+                                <div className={styles.small_inputs_group}>
+                                    <div className={styles.input_wraper}>
+                                        <div className={`${styles.input_small} ${firstNameError ? styles.input_small_error : ''}`}>
+                                            <input className={styles.input} type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required/>
+                                            {firstNameError && <span className={styles.input_label_error}>{firstNameError}</span>}
+                                            <label className={`${styles.input_label} ${firstName ? styles.input_label_notEmpty : ''}`}>Nom</label>
+                                            <UserIcon/>
+                                        </div>
                                     </div>
-                                    <div className={styles.group_small}>
-                                        <input className={styles.input} type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required/>
-                                        <span className={styles.highlight}></span>
-                                        <span className={styles.bar}></span>
-                                        <label className={styles.input_label}>Prénom</label>
-                                        {lastNameError && <span className={styles.input_label_error}>{lastNameError}</span>}
+                                    <div className={styles.input_wraper}>
+                                        <div className={`${styles.input_small} ${lastNameError ? styles.input_small_error : ''}`}>
+                                            <input className={styles.input} type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required/>
+                                            {lastNameError && <span className={styles.input_label_error}>{lastNameError}</span>}
+                                            <label className={`${styles.input_label} ${lastName ? styles.input_label_notEmpty : ''}`}>Prénom</label>
+                                            <UserIcon/>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className={styles.group}>
-                                    <input className={styles.input} type="text" value={email} onChange={(e) => setEmail(e.target.value)} required/>
-                                    <span className={styles.highlight}></span>
-                                    <span className={styles.bar}></span>
-                                    <label className={styles.input_label} >Email</label>
-                                    {emailError && <span className={styles.input_label_error}>{emailError}</span>}
+                                <div className={styles.input_wraper_large}>
+                                    <div className={`${styles.input_large} ${emailError ? styles.input_small_error : ''}`}>
+                                        <input className={styles.input} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                                        {emailError && <span className={styles.input_label_error}>{emailError}</span>}
+                                        <label className={`${styles.input_label} ${email ? styles.input_label_notEmpty : ''}`}>Email</label>
+                                        <EmailIcon/>
+                                    </div>
                                 </div>
-                                <div className={styles.group}>
-                                    <input className={styles.input} type="text" value={pseudo} onChange={(e) => setPseudo(e.target.value)} required/>
-                                    <span className={styles.highlight}></span>
-                                    <span className={styles.bar}></span>
-                                    <label className={styles.input_label}>Pseudo</label>
-                                    {pseudoError && <span className={styles.input_label_error}>{pseudoError}</span>}
+                                <div className={styles.input_wraper_large}>
+                                    <div className={`${styles.input_large} ${passwordError ? styles.input_small_error : ''}`}>
+                                        <input className={styles.input} type={isVisiblePassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required/>
+                                        {passwordError && <span className={styles.input_label_error}>{passwordError}</span>}
+                                        <label className={`${styles.input_label} ${password ? styles.input_label_notEmpty : ''}`}>Mot de passe</label>
+                                        <div  className={styles.eye_cursor} onClick={changeVisibility}>
+                                            {isVisiblePassword ? <VisibleOffPasswordIcon/> : <VisiblePasswordIcon/>}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className={styles.group}>
-                                    <input className={styles.input} type="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-                                    <span className={styles.highlight}></span>
-                                    <span className={styles.bar}></span>
-                                    <label className={styles.input_label}>Mot de passe</label>
-                                    {passwordError && <span className={styles.input_label_error}>{passwordError}</span>}
+                                <div className={styles.input_wraper_large}>
+                                    <div className={`${styles.input_large} ${passwordError ? styles.input_small_error : ''}`}>
+                                        <input className={styles.input} type={isVisiblePassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
+                                        {passwordError && <span className={styles.input_label_error}>{passwordError}</span>}
+                                        <label className={`${styles.input_label} ${confirmPassword ? styles.input_label_notEmpty : ''}`}>Confirmer le mot de passe</label>
+                                    </div>
                                 </div>
-                                <div className={styles.group}>
-                                    <input className={styles.input} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
-                                    <span className={styles.highlight}></span>
-                                    <span className={styles.bar}></span>
-                                    <label className={styles.input_label}> Confirmer le mot de passe </label>
-                                    {passwordError && <span className={styles.input_label_error}>{passwordError}</span>}
+                                <div className={styles.exist_user}>
+                                    <a href="/auth/login">Déjà inscrit·e ? Connexion</a>
                                 </div>
                                 <button type="button"  onClick={handleSignUpClick} className={styles.submit_button}>S'inscrire</button>
-                                <span className={styles.separation}></span>
-
-                                <div className={styles.social_login}>
-                                    <div className="g-signin2" data-onsuccess="onSignIn"></div>
-                                    {/*    <button className={styles.google_button}>Se connecter avec Google</button>*/}
-                                    {/*    <button className={styles.facebook_button}>Se connecter avec Facebook</button>*/}
-                                </div>
-                            </form>
-                        </div>
-                        <div className={styles.right_side}>
-                            <div className={styles.image_container}>
-                                <Image
-                                    src="/Auth/signUp.svg"
-                                    alt="Développeuse ajustant une interface de connexion sur un écran de smartphone géant avec des éléments de design flottants et une plante."
-                                    fill
-                                    style={{ objectFit: 'contain' }}
-                                />
                             </div>
-                        </div>
-
+                        </form>
                     </div>
                 </div>
             </main>
-
-            {/*<button onClick={handleSignUpClick}>*/}
-            {/*</button>*/}
         </>
     );
 }
